@@ -1,0 +1,8 @@
+authtoken: 1Sghbr1mrq7180Jg0mShHeWmfKD_878BDfAFte41458KGGoxt
+tunnels:
+  first:
+    addr: 8000
+    proto: http
+  second:
+    addr: 8001
+    proto: http

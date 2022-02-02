@@ -3,22 +3,40 @@ from fastapi.staticfiles import StaticFiles
 
 
 import uuid
+import json
 import uvicorn
 import socketio
 import eventlet
 
 
-users = []
+users = {}
+names_from_tokens = {}
+all_messages = []
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="."))
 
+@app.get("/prev")
+def prev():
+    return all_messages
+
+
 @app.get("/login/{name}")
-def read_root(name):
+def login(name):
     token = str(uuid.uuid4())
-    users.append(token)
+    users[token] = True
+    names_from_tokens[token] = name
     return {"token": token}
 
+
+@app.get("/logout/{token}")
+def logout(token):
+    if token in users:
+        users[token] = False
+    
+    return {"status_code": "ok"}
+    
 
 def backend_server():
     uvicorn.run(app, host='0.0.0.0', port=8000)
@@ -35,12 +53,19 @@ def connect(sid, envoirn):
 @sio.on('*')
 def catch_all(event, sid, data):
     if event == "msg":
-        sio.emit('msg', data, broadcast = True)
+        d = json.loads(data)
+        if d[0] in users and users[d[0]]==True:
+            d[0] = names_from_tokens[d[0]]
+            sio.emit('msg', json.dumps(d), broadcast = True)
+            all_messages.append(d)
+
+        else :
+            print(f"message {data} dropped")
         
 
 
 def chat_server():
-    eventlet.wsgi.server(eventlet.listen(('localhost', 8001)), capp)
+    eventlet.wsgi.server(eventlet.listen(('', 8001)), capp)
 
 
 if __name__ == "__main__":
