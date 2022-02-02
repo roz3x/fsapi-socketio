@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>project</title>
+		<script
+			src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+			integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+			crossorigin="anonymous"
+		></script>
+	</head>
+	<body>
+		<div>
+			<label> login : </label>
+			<input id="username" />
+			<button onclick="submit()">submit</button>
+		</div>
+		<div id="login_status">not logged in</div>
+		<div id="messages"></div>
+		<div>
+			<input id="msg" />
+			<button onclick="send()">send</button>
+		</div>
+		<script defer src="./script.js"></script>
+	</body>
+</html>
